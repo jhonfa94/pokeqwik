@@ -1,5 +1,5 @@
 import { $, component$, useSignal } from "@builder.io/qwik";
-import type { DocumentHead } from "@builder.io/qwik-city";
+import { type DocumentHead, useNavigate } from "@builder.io/qwik-city";
 import { PokemonImagen } from "~/components/pokemons/pokemon-image";
 
 // import Counter from "~/components/starter/counter/counter";
@@ -26,6 +26,12 @@ export default component$(() => {
 
   })
 
+  const nav = useNavigate();
+  const gotToPokemon = $(() => {
+    nav(`/pokemon/${pokemonId.value}/`)
+  })
+
+
 
   return (
     <>
@@ -34,13 +40,16 @@ export default component$(() => {
       {/* <span class="text-9xl">{pokemonId}</span> */}
       <span class="text-9xl">{pokemonId.value}</span>
 
-
-      <PokemonImagen
-        id={pokemonId.value}
-        backImage={showBackImage.value}
-        isVisible={isPokemonVisible.value}
-        size={300}
-      />
+      {/* <Link href={`/pokemon/${pokemonId.value}/`}>
+      </Link> */}
+      <div onClick$={() => gotToPokemon()}>
+        <PokemonImagen
+          id={pokemonId.value}
+          backImage={showBackImage.value}
+          isVisible={isPokemonVisible.value}
+          size={300}
+        />
+      </div>
 
       <div class="flex space-x-2 mt-2">
         <button onClick$={() => changePokemonId(-1)} class="btn btn-primary">Anterior</button>

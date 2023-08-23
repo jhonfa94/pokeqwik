@@ -1,4 +1,4 @@
-import { component$, useSignal, useTask$ } from "@builder.io/qwik";
+import { component$, useComputed$, useSignal, useTask$ } from "@builder.io/qwik";
 
 interface Props {
     id: number,
@@ -11,7 +11,7 @@ export const PokemonImagen = component$(({
     id,
     size = 200,
     backImage = false,
-    isVisible = true
+    isVisible = false
 }: Props) => {
 
     const imageLoaded = useSignal(false);
@@ -23,9 +23,16 @@ export const PokemonImagen = component$(({
         imageLoaded.value = false;
     })
 
-    const urlPokemonImage = backImage
-        ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${id}.png`
-        : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+    const imageUrl = useComputed$(() => {
+        return (backImage)
+            ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${id}.png`
+            : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+    })
+
+
+    // const urlPokemonImage = backImage
+    //     ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/${id}.png`
+    //     : `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
 
 
     return (
@@ -37,14 +44,14 @@ export const PokemonImagen = component$(({
             <img
                 width={size}
                 height={size}
-                src={urlPokemonImage}
+                src={imageUrl.value}
                 alt="poke"
                 style={{ width: `${size}px` }}
                 onLoad$={() => {
                     // Simulamos la conexión  lenta para el cargue de la imagen
-                    setTimeout(() => {
-                        imageLoaded.value = true
-                    }, 1500);
+                    // setTimeout(() => {
+                    imageLoaded.value = true
+                    // }, 1000);
                 }}
                 class={[{
                     'hidden': !imageLoaded.value,
