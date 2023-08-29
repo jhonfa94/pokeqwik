@@ -5,6 +5,7 @@ import type { RequestHandler } from "@builder.io/qwik-city";
 import Navbar from "~/components/shared/navbar/navbar";
 
 import styles from "./styles.css?inline";
+import { PokemonProvider } from "~/context";
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
   // Control caching for this request for best performance and to reduce hosting costs:
@@ -25,13 +26,15 @@ export const useServerTimeLoader = routeLoader$(() => {
 
 export default component$(() => {
   useStyles$(styles);
+
+
   return (
-    <>
+    <PokemonProvider>
       <Navbar />
       <main class="flex flex-col items-center justify-center">
         <Slot />
       </main>
 
-    </>
+    </PokemonProvider>
   );
 });
