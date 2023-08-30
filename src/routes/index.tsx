@@ -1,40 +1,27 @@
-import { $, component$, useContext } from "@builder.io/qwik";
+import { $, component$ } from "@builder.io/qwik";
 import { type DocumentHead, useNavigate } from "@builder.io/qwik-city";
 import { PokemonImagen } from "~/components/pokemons/pokemon-image";
-import { PokemonGameContext } from "~/context";
+import { usePokemonGame } from "~/hooks/use-pokemon-game";
 
-// import Counter from "~/components/starter/counter/counter";
-// import Hero from "~/components/starter/hero/hero";
-// import Infobox from "~/components/starter/infobox/infobox";
-// import Starter from "~/components/starter/next-steps/next-steps";
 
 export default component$(() => {
 
-  // const pokemonId = useSignal<number>(1);
-  // const showBackImage = useSignal(false);
-  // const isPokemonVisible = useSignal(true);
-
-  const pokemonGame = useContext(PokemonGameContext);
-
-
-
-  /**
-   * useSignal para  primitivos => booleans, strings, numbers
-   * useStore para arreglos y objetos
-   */
-
-  const changePokemonId = $((value: number) => {
-    if ((pokemonGame.pokemonId + value) <= 0) return;
-
-    pokemonGame.pokemonId += value;
-    pokemonGame.isPokemonVisible = true;
-
-  })
-
   const nav = useNavigate();
-  const gotToPokemon = $(() => {
-    nav(`/pokemon/${pokemonGame.pokemonId}/`)
-  })
+
+  const gotToPokemon = $((id: number) => {
+    nav(`/pokemon/${id}/`)
+  });
+
+
+  const {
+    pokemonId,
+    showBackImage,
+    isPokemonVisible,
+    nextPokemon,
+    previusPokemon,
+    toogleFromBack,
+    toogleVisible
+  } = usePokemonGame();
 
 
 
@@ -43,27 +30,27 @@ export default component$(() => {
       <span class="text-2xl">Buscador simple</span>
 
       {/* <span class="text-9xl">{pokemonId}</span> */}
-      <span class="text-9xl">{pokemonGame.pokemonId}</span>
+      <span class="text-9xl">{pokemonId.value}</span>
 
       {/* <Link href={`/pokemon/${pokemonId.value}/`}>
       </Link> */}
-      <div onClick$={() => gotToPokemon()}>
+      <div onClick$={() => gotToPokemon(pokemonId.value)}>
         <PokemonImagen
-          id={pokemonGame.pokemonId}
-          backImage={pokemonGame.showBackImage}
-          isVisible={pokemonGame.isPokemonVisible}
+          id={pokemonId.value}
+          backImage={showBackImage.value}
+          isVisible={isPokemonVisible.value}
           size={300}
         />
       </div>
 
       <div class="flex space-x-2 mt-2">
-        <button onClick$={() => changePokemonId(-1)} class="btn btn-primary">Anterior</button>
+        <button onClick$={previusPokemon} class="btn btn-primary">Anterior</button>
 
-        <button onClick$={() => changePokemonId(+1)} class="btn btn-primary">Siguiente</button>
+        <button onClick$={nextPokemon} class="btn btn-primary">Siguiente</button>
 
-        <button onClick$={() => pokemonGame.showBackImage = !pokemonGame.showBackImage} class="btn btn-primary">Voltear</button>
+        <button onClick$={toogleFromBack} class="btn btn-primary">Voltear</button>
 
-        <button onClick$={() => pokemonGame.isPokemonVisible = !pokemonGame.isPokemonVisible} class="btn btn-primary">Revelar</button>
+        <button onClick$={toogleVisible} class="btn btn-primary">Revelar</button>
       </div>
 
     </>
